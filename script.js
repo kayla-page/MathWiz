@@ -1,13 +1,16 @@
 function solveMathProblem() {
     const mathProblem = document.getElementById('mathProblem').value;
     const solutionDiv = document.getElementById('solution');
-    
-    // Dummy function to simulate solving the math problem
-    function dummySolver(problem) {
-        // This is where you can integrate a real math solving library or API
-        return `Step by step solution for: ${problem}`;
+
+    try {
+        // Using math.js to parse and simplify the expression
+        const simplified = math.simplify(mathProblem);
+        const steps = `Simplified form: ${simplified.toString()}`;
+
+        // Display the result
+        solutionDiv.innerHTML = `<p>${steps}</p>`;
+    } catch (error) {
+        solutionDiv.innerHTML = `<p>There was an error solving the problem: ${error.message}</p>`;
     }
-    
-    const solution = dummySolver(mathProblem);
-    solutionDiv.innerHTML = `<p>${solution}</p>`;
 }
+
