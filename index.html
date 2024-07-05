@@ -53,6 +53,22 @@
         <div id="solution"></div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/10.0.0/math.js"></script>
-    <script src="script.js"></script>
+    <script>
+        function solveMathProblem() {
+            const problem = document.getElementById('mathProblem').value;
+            const solutionDiv = document.getElementById('solution');
+            
+            try {
+                const result = math.evaluate(problem);
+                const steps = `Steps to solve the problem:
+                                1. Parse the problem: ${problem}
+                                2. Evaluate using math.js: ${result}`;
+                
+                solutionDiv.innerHTML = `<p><strong>Solution:</strong> ${result}</p><p>${steps}</p>`;
+            } catch (error) {
+                solutionDiv.innerHTML = `<p>Error: ${error.message}</p>`;
+            }
+        }
+    </script>
 </body>
 </html>
