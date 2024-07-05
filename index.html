@@ -52,19 +52,31 @@
         <button onclick="solveMathProblem()">Solve</button>
         <div id="solution"></div>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/10.0.0/math.js"></script>
     <script>
-        function solveMathProblem() {
+        async function solveMathProblem() {
             const problem = document.getElementById('mathProblem').value;
             const solutionDiv = document.getElementById('solution');
+            const apiKey = 'YOUR_WOLFRAMALPHA_APP_ID';  // Replace with your WolframAlpha App ID
+            
+            solutionDiv.innerHTML = 'Solving...';
             
             try {
-                const result = math.evaluate(problem);
-                const steps = `Steps to solve the problem:
-                                1. Parse the problem: ${problem}
-                                2. Evaluate using math.js: ${result}`;
+                const response = await fetch(`https://api.wolframalpha.com/v2/query?input=${encodeURIComponent(problem)}&format=plaintext&output=JSON&appid=${apiKey}`);
+                const data = await response.json();
                 
-                solutionDiv.innerHTML = `<p><strong>Solution:</strong> ${result}</p><p>${steps}</p>`;
+                if (data.queryresult.success) {
+                    const pods = data.queryresult.pods;
+                    let solutionHTML = '<h2>Solution:</h2>';
+                    pods.forEach(pod => {
+                        solutionHTML += `<h3>${pod.title}</h3>`;
+                        pod.subpods.forEach(subpod => {
+                            solutionHTML += `<p>${subpod.plaintext}</p>`;
+                        });
+                    });
+                    solutionDiv.innerHTML = solutionHTML;
+                } else {
+                    solutionDiv.innerHTML = `<p>No solution found for the problem: "${problem}"</p>`;
+                }
             } catch (error) {
                 solutionDiv.innerHTML = `<p>Error: ${error.message}</p>`;
             }
